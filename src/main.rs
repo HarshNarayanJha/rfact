@@ -16,18 +16,25 @@ struct Args {
     today: bool,
 }
 
+fn get_fact(url: String) -> Result<Fact, reqwest::Error> {
+    let resp: Result<Fact, reqwest::Error> =
+        reqwest::blocking::get(url).and_then(|resp| resp.json());
+
+    resp
+}
+
 fn main() {
     let args = Args::parse();
 
     let endpoint = if args.today { TODAY } else { RANDOM };
     let url = format!("{}{}", FACTS_URL, endpoint);
 
-    let resp: Fact = match reqwest::blocking::get(url) {
-        Ok(resp) => match resp.json() {
-            Ok(resp) => resp,
-            Err(err) => panic!("Error: {}", err),
-        },
-        Err(err) => panic!("Error: {}", err),
+    let fact: Fact = match get_fact(url) {
+        Ok(fact) => fact,
+        Err(err) => {
+            eprintln!("Error in parsing JSON: {}", err);
+            std::process::exit(1);
+        }
     };
-    println!("Today's Random Fact\n{:#?}", resp);
+    println!("{}", fact);
 }
