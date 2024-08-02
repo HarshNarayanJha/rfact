@@ -1,0 +1,10 @@
+[package]
+name = "rfacts"
+description = "Print random useless facts in your terminal!"
+authors = ["Harsh Narayan Jha"]
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.13", features = ["derive"] }
+reqwest = { version = "0.12.5", features = ["json"] }
